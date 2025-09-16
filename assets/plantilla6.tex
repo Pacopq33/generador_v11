@@ -1,0 +1,161 @@
+\documentclass[12pt,a4paper,landscape]{article}
+
+\usepackage{polyglossia}
+\setmainlanguage{spanish}
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\newfontfamily\garamond{Garamond}[UprightFont=*-Regular,ItalicFont=*-Italic,BoldFont=*-Bold]
+\newfontfamily\arialnarrow{Arial Narrow}
+% Definimos los márgenes para geometry. Estos márgenes son donde TU CONTENIDO DEBE IR.
+% El marco de TikZ se dibujará *alrededor* de estos márgenes.
+\usepackage[a4paper,landscape,left=0.5cm,right=0.5cm,top=0.5cm,bottom=0.5cm]{geometry} % Márgenes ajustados para el contenido
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{setspace}
+\usepackage[normalem]{ulem} % Asegúrate de que ulem está cargado
+\usepackage{ragged2e}
+\usepackage{calc}
+\usepackage{atbegshi}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,fitting,breakable}
+\usetikzlibrary{calc}
+\usepackage[absolute,overlay]{textpos} % Paquete para posicionamiento absoluto
+
+\setstretch{1.0}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+% Opciones de tcolorbox (las mantenemos por si usas otras cajas internas)
+\tcbset{
+  external_frame_style/.style={boxsep=0pt,colback=white!98!gray,enhanced,sharp corners,boxrule=0.4mm,colframe=black,drop shadow={xshift=1mm,yshift=-1mm,fill=black!15}},
+  internal_box_style/.style={colback=white,colframe=white,boxrule=0pt,sharp corners,halign=center,valign=center,nobeforeafter,left=1.5cm,right=1.5cm}
+}
+
+% --- Configuración de textpos ---
+% Define el módulo de las unidades de textpos para que sean centímetros.
+\setlength{\TPHorizModule}{1cm}
+\setlength{\TPVertModule}{1cm}
+% --- Fin de configuración de textpos ---
+
+% Calculamos el ancho y alto disponible para el contenido,
+% considerando los márgenes que definimos en geometry.
+% \paperwidth y \paperheight son las dimensiones físicas de la página A4 landscape.
+% geometry ajusta \textwidth y \textheight para que sean el área donde se escribe.
+\newlength{\contentwidth}
+\newlength{\contentheight}
+\setlength{\contentwidth}{\textwidth}
+\setlength{\contentheight}{\textheight}
+
+% Margen desde el borde inferior de la página para las firmas
+\newlength{\signaturebottommargin}
+\setlength{\signaturebottommargin}{2cm} % AJUSTE AQUÍ: Disminuimos el valor para que las firmas bajen más.
+
+\begin{document}
+
+% Marco decorativo (se dibuja primero y en overlay)
+% Las coordenadas de current page.south west/north east se refieren a la página entera.
+% El margen de 0.5cm es el espacio entre el borde del papel y el marco dibujado.
+\begin{tikzpicture}[remember picture, overlay]
+  \draw[line width=0.5pt] (current page.south west) ++(0.2cm,0.2cm) rectangle ($(current page.north east) +(-0.2cm,-0.2cm)$);
+\end{tikzpicture}
+
+% --- El contenedor principal con textblock ---
+% Usamos textblock para posicionar todo el contenido del certificado.
+% El primer argumento es el ancho del bloque (nuestra \contentwidth).
+% Los segundos y terceros argumentos son las coordenadas (x,y) desde la esquina superior izquierda de la página
+% hasta la esquina superior izquierda de este bloque.
+% Queremos que empiece donde comienzan los márgenes del documento.
+\begin{textblock*}{\contentwidth}(1cm,1cm) % Posiciona el bloque a 2cm de left y 2cm de top.
+
+  % Aquí va todo el contenido de tu certificado
+  % Los \vspace ahora se comportarán de forma más predecible dentro de este bloque.
+
+  \vspace*{0.5cm} % Espacio desde la parte superior del textblock
+
+  \begin{center}
+    \parbox{\linewidth}{\centering % Usa \linewidth aquí para el ancho de la parbox dentro del textblock
+      \includegraphics[width=0.8\linewidth,keepaspectratio,height=4cm, interpolate]{logomejor.png} % Agregado "interpolate"
+    }
+  \end{center}
+
+  \vspace{1cm} % Espacio después del logo
+
+  \begin{center}
+      \parbox{\linewidth}{\centering % Usa \linewidth para los anchos
+      {\garamond\fontsize{22pt}{20pt}\selectfont Por cuanto }
+      {\garamond\fontsize{24pt}{20pt}\selectfont \textit{ {{NOMBRE_APELLIDO}}}}
+      {\garamond\fontsize{24pt}{24pt}\selectfont \textit{DNI Nº }}
+      {\garamond\fontsize{24pt}{24pt}\selectfont \textit{ {{DNI}}}}
+      {\garamond\fontsize{22pt}{20pt}\selectfont ha aprobado la}
+      }
+  \end{center}
+
+  \vspace{-0.4cm}
+
+  \begin{center}
+      \resizebox{\linewidth}{!}{ % Usa \linewidth aquí también
+      {\garamond\fontsize{20pt}{14pt}\selectfont\textbf{"{{CARRERA}}"}}
+      }
+  \end{center}
+
+  \vspace{-0.4cm}
+
+  \begin{center}
+      \parbox{\linewidth}{\centering % Usa \linewidth para los anchos
+      {\garamond\fontsize{20pt}{20pt}\selectfont Por tanto le expide el presente certificado.}
+      }
+  \end{center}
+
+  \vspace{-0.4cm}
+
+  \begin{center}
+    \parbox{\linewidth}{\centering % Usa \linewidth para los anchos
+    {\garamond\fontsize{18pt}{18pt}\selectfont\textit{Disposicion INSPT-UTN Nº }}
+    {\garamond\fontsize{18pt}{18pt}\selectfont\textit{{{DISPO}}}}
+    {\garamond\fontsize{18pt}{18pt}\selectfont\textit{con una carga horaria de 620 hs. reloj}}
+    }
+  \end{center}
+
+  \vspace{0.2cm}
+
+  \begin{center}
+      % La configuración del subrayado ya es global en el preámbulo, así que solo usamos \uline.
+      {\parbox{\linewidth}{\centering % Usa \linewidth para el ancho
+      {\garamond\fontsize{18pt}{18pt}\selectfont\textbf{Buenos Aires, }}
+      {\garamond\fontsize{20pt}{20pt}\selectfont\textit{{{DIA}}} }
+      {\garamond\fontsize{18pt}{18pt}\selectfont\textbf{de}}
+      {\garamond\fontsize{20pt}{20pt}\selectfont\textit{{{MES}}} }
+      {\garamond\fontsize{18pt}{18pt}\selectfont\textbf{de 2025}}
+      }}
+      \vspace*{-5cm}
+  \end{center}
+
+\end{textblock*} % Fin del textblock principal
+
+
+
+
+% --- Firmas con posicionamiento absoluto en los extremos inferiores ---
+% Bloque para la firma izquierda
+\begin{textblock*}{0.42\linewidth}(0.5cm, \dimexpr\paperheight-\signaturebottommargin-2cm\relax) % 3.5cm es una altura estimada para la firma, ajusta si es necesario
+    \centering
+    \rule{0.5\linewidth}{0.5pt} \\
+    {\arialnarrow\fontsize{12pt}{14pt}\selectfont Prof. Manuel J. Polantinos} \\
+    {\arialnarrow\fontsize{10pt}{12pt}\selectfont Secretario de Planeamiento} \\
+    {\arialnarrow\fontsize{8pt}{10pt}\selectfont Instituto Nacional Superior del Profesorado Técnico} \\
+    {\arialnarrow\fontsize{8pt}{10pt}\selectfont Universidad Tecnólogica Nacional}
+\end{textblock*}
+
+% Bloque para la firma derecha
+\begin{textblock*}{0.42\linewidth}(\dimexpr\paperwidth-0.5cm-0.42\linewidth\relax, \dimexpr\paperheight-\signaturebottommargin-2cm\relax)
+    \centering
+    \rule{0.5\linewidth}{0.5pt} \\
+    {\arialnarrow\fontsize{12pt}{14pt}\selectfont Ing. Alberto Viarengo} \\
+    {\arialnarrow\fontsize{10pt}{12pt}\selectfont Director} \\
+    {\arialnarrow\fontsize{8pt}{10pt}\selectfont Instituto Nacional Superior del Profesorado Técnico} \\
+    {\arialnarrow\fontsize{8pt}{10pt}\selectfont Universidad Tecnólogica Nacional}
+\end{textblock*}
+
+\end{document}

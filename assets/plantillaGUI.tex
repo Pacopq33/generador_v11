@@ -1,0 +1,136 @@
+\documentclass[12pt,a4paper,landscape]{article}
+
+% Paquetes esenciales
+\usepackage{polyglossia}
+\setmainlanguage{spanish}
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\newfontfamily\garamond{Garamond}[UprightFont=*-Regular,ItalicFont=*-Italic,BoldFont=*-Bold]
+\newfontfamily\arialnarrow{Arial Narrow}
+\usepackage[a4paper,landscape,left=2cm,right=2cm,top=2.5cm,bottom=2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{setspace}
+\usepackage[normalem]{ulem}
+\usepackage{ragged2e}
+\usepackage{calc}
+\usepackage{atbegshi}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,fitting,breakable}
+
+% Configuración general
+\setstretch{1.0}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+% Definiciones de ULEM (sin saltos ni espacios)
+\makeatletter\ULthickness=1.2pt\ULdepth=0.5ex\makeatother
+
+% Estilos tcolorbox
+\tcbset{
+  external_frame_style/.style={boxsep=0pt,colback=white!98!gray,enhanced,sharp corners,boxrule=0.4mm,colframe=black,drop shadow={xshift=1mm,yshift=-1mm,fill=black!15}},
+  internal_box_style/.style={colback=white,colframe=white,boxrule=0pt,sharp corners,halign=center,valign=center,nobeforeafter,left=1.5cm,right=1.5cm}
+}
+
+% Ancho disponible para contenido
+\newlength{\availablewidthforcontent}
+\setlength{\availablewidthforcontent}{\paperwidth}
+\addtolength{\availablewidthforcontent}{-1cm}
+
+\begin{document}
+
+% Marco decorativo
+\begin{tikzpicture}[remember picture, overlay]
+  \draw[line width=0.5pt] (0.5,-0.5) rectangle (\paperwidth-0.5,-\paperheight+0.5);
+\end{tikzpicture}
+
+% Espacio inicial
+\vspace*{0.5cm}
+
+% Logo
+\begin{center}
+  \parbox{\availablewidthforcontent}{\centering
+    \includegraphics[width=\linewidth,keepaspectratio,height=4cm]{logomejor.png}
+  }
+\end{center}
+
+\vspace{0.5cm}
+
+% Texto principal
+\begin{center}
+  \parbox{\textwidth}{\centering
+    {\garamond\fontsize{18pt}{20pt}\selectfont Por cuanto }
+    {\garamond\fontsize{22pt}{24pt}\selectfont \textit{ {{NOMBRE_APELLIDO}} }}
+    {\garamond\fontsize{22pt}{24pt}\selectfont \textit{DNI N°}}
+    {\garamond\fontsize{22pt}{24pt}\selectfont \textit{ {{DNI}} }}
+    {\garamond\fontsize{18pt}{20pt}\selectfont ha aprobado la}
+  }
+\end{center}
+
+\vspace{-0.2cm}
+
+% Carrera (ajuste automático)
+\begin{center}
+  \resizebox{\textwidth}{!}{
+    {\garamond\fontsize{20pt}{22pt}\selectfont\textbf{"{{CARRERA}}"}}
+  }
+\end{center}
+
+\vspace{-0.2cm}
+
+% Certificado
+\begin{center}
+  \parbox{0.6\textwidth}{\centering
+    {\garamond\fontsize{18pt}{20pt}\selectfont Por tanto le expide el presente certificado.}
+  }
+\end{center}
+
+\vspace{-0.2cm}
+
+% Disposición y carga horaria
+\begin{center}
+  \parbox{0.75\textwidth}{\centering
+    {\garamond\fontsize{14pt}{16pt}\selectfont\textit{Disposición INSPT-UTN N°}}
+    {\garamond\fontsize{14pt}{16pt}\selectfont\textit{ {{DISPO}} }}
+    {\garamond\fontsize{14pt}{16pt}\selectfont\textit{con una carga horaria de 620 hs. reloj}}
+  }
+\end{center}
+
+\vspace{-0.2cm}
+
+% Fecha y lugar
+\begin{center}
+  {\garamond\fontsize{14pt}{16pt}\selectfont \textbf{Buenos Aires,} }
+  {\garamond\fontsize{16pt}{18pt}\selectfont \uline{\textit{ {{DIA}} }}}
+  {\garamond\fontsize{14pt}{16pt}\selectfont \textbf{de} }
+  {\garamond\fontsize{16pt}{18pt}\selectfont \uline{\textit{ {{MES}} }}}
+  {\garamond\fontsize{14pt}{16pt}\selectfont \textbf{ de 2025}}
+\end{center}
+
+% Firmas
+\vfill
+\makebox[\availablewidthforcontent][s]{
+  \parbox[t]{0.42\availablewidthforcontent}{
+    \centering
+    \rule{0.5\linewidth}{0.5pt} \\
+    {\arialnarrow\fontsize{12pt}{14pt}\selectfont Prof. Manuel J. Polantinoz} \\
+    {\arialnarrow\fontsize{10pt}{12pt}\selectfont Secretario de Planeamiento} \\
+    {\arialnarrow\fontsize{8pt}{10pt}\selectfont Instituto Nacional Superior del Profesorado} \\
+    {\arialnarrow\fontsize{8pt}{10pt}\selectfont Tecnico de la Universidad Tecnológica Nacional}
+  }
+  \hfill
+  \parbox[t]{0.42\availablewidthforcontent}{
+    \centering
+    \rule{0.5\linewidth}{0.5pt} \\
+    {\arialnarrow\fontsize{12pt}{14pt}\selectfont Ing. Alberto Viarengo} \\
+    {\arialnarrow\fontsize{10pt}{12pt}\selectfont Director} \\
+    {\arialnarrow\fontsize{8pt}{10pt}\selectfont Instituto Nacional Superior del Profesorado} \\
+    {\arialnarrow\fontsize{8pt}{10pt}\selectfont Tecnico de la Universidad Tecnológica Nacional}
+  }
+}
+
+\vspace{0.4cm}
+
+\end{document}
