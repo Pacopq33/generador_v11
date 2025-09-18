@@ -1,178 +1,120 @@
 # Generador de Certificados Académicos
 
-Aplicación de escritorio desarrollada en Python para generar certificados académicos en PDF a partir de datos de Excel utilizando plantillas LaTeX.
+Aplicación de escritorio desarrollada en Python que genera certificados en PDF a partir de datos contenidos en un archivo Excel. El PDF se compone íntegramente con [ReportLab](https://www.reportlab.com/), por lo que ya no es necesario instalar MiKTeX ni mantener plantillas LaTeX externas.
 
 ## 🚀 Características
 
-- **Interfaz Gráfica Moderna**: Desarrollada con CustomTkinter
-- **Procesamiento por Lotes**: Genera múltiples certificados automáticamente
-- **Validación Robusta**: Verifica datos y formato antes de procesar
-- **Logging Visual**: Consola de logs con colores por tipo de mensaje
-- **Progreso en Tiempo Real**: Barra de progreso durante la generación
-- **Limpieza Automática**: Elimina archivos temporales automáticamente
+- **Interfaz gráfica moderna** basada en Tk/ttkthemes.
+- **Renderizado PDF nativo** con ReportLab: sin procesos externos ni compilaciones LaTeX.
+- **Procesamiento por lotes** con seguimiento en tiempo real desde la UI.
+- **Validaciones de datos y del sistema** previas a la generación.
+- **Logging unificado** en consola, archivo y panel dentro de la aplicación.
 
 ## 📋 Requisitos del Sistema
 
-### Software Requerido
-- **Windows 10+**
-- **Python 3.8+**
-- **MiKTeX** (distribución LaTeX para Windows)
+### Software necesario
+- Windows 10 o superior.
+- Python 3.9 o superior.
 
 ### Dependencias Python
-\`\`\`
-customtkinter==5.2.0
-pandas==2.0.3
-openpyxl==3.1.2
-Pillow==10.0.0
-\`\`\`
+Instale todas las dependencias con:
 
-## 🛠️ Instalación
-
-### 1. Instalar MiKTeX
-1. Descargar desde [miktex.org](https://miktex.org/download)
-2. Ejecutar el instalador
-3. Verificar instalación ejecutando \`pdflatex --version\` en CMD
-
-### 2. Instalar Dependencias Python
-\`\`\`bash
+```bash
 pip install -r requirements.txt
-\`\`\`
+```
 
-### 3. Ejecutar Aplicación
-\`\`\`bash
-python main.py
-\`\`\`
+El archivo incluye:
 
-## 📊 Formato de Datos Excel
+- `pandas`, `openpyxl` para trabajar con Excel.
+- `reportlab` para el renderizado del certificado.
+- `ttkthemes` y `Pillow` para la interfaz.
+- `pyinstaller` para generar ejecutables (opcional en desarrollo).
 
-El archivo Excel debe contener las siguientes columnas **exactas**:
+### Recursos opcionales
+En `assets/fonts/` puede colocar versiones TrueType de Garamond y Arial Narrow si desea replicar la estética institucional. El motor utiliza fuentes estándar (Times/Helvetica) cuando no están disponibles.
 
-| Columna | Descripción | Ejemplo |
-|---------|-------------|---------|
-| \`nombre_apellido\` | Nombre completo | "Juan Pérez" |
-| \`dni\` | DNI con puntos | "22.222.222" |
-| \`carrera\` | Nombre de la carrera | "Ingeniería Informática" |
-| \`dispo\` | Número de disposición | "123/2024" |
-| \`dia\` | Día de emisión | "15" |
-| \`mes\` | Mes de emisión | "marzo" |
+## 🛠️ Instalación y uso
 
-### ⚠️ Importante
-- Los nombres de columnas deben ser **exactos** (minúsculas, con guiones bajos)
-- El DNI debe mantener el formato con puntos
-- No debe haber filas completamente vacías
+1. **Clonar o copiar** el repositorio en su equipo.
+2. **Instalar dependencias** con `pip install -r requirements.txt` dentro del entorno deseado.
+3. **Ejecutar la aplicación**:
+   ```bash
+   python main_v2.py
+   ```
+4. **Flujo en la interfaz**:
+   - Cargue el Excel desde el botón `📄 Cargar Excel`.
+   - Seleccione la carpeta de salida (`📁 Carpeta Salida`).
+   - Valide los datos si lo desea (`Validar Datos`).
+   - Seleccione los registros y pulse `GENERAR CERTIFICADOS`.
 
-## 🎯 Uso de la Aplicación
+## 📊 Formato del archivo Excel
 
-### 1. Cargar Datos
-1. Hacer clic en **"📄 Cargar Excel"**
-2. Seleccionar archivo Excel con el formato correcto
-3. Verificar que los datos aparezcan en la tabla
+El Excel debe incluir al menos las siguientes columnas:
 
-### 2. Validar Datos
-1. Hacer clic en **"Validar Datos"** para verificar formato
-2. Revisar mensajes en la consola de logs
-3. Corregir errores si es necesario
+| Columna            | Descripción                        | Ejemplo               |
+|--------------------|------------------------------------|-----------------------|
+| `nombre_apellido`  | Nombre completo de la persona      | "Juan Pérez"         |
+| `dni`              | Documento con puntos               | "22.222.222"         |
+| `carrera`          | Curso o carrera aprobada           | "Tecnicatura ..."    |
+| `dispo`            | Número de disposición              | "123/2024"           |
+| `dia`              | Día de emisión                     | "15"                 |
+| `mes`              | Mes de emisión (texto)             | "marzo"              |
 
-### 3. Seleccionar Salida
-1. Hacer clic en **"📁 Carpeta Salida"**
-2. Elegir carpeta donde guardar los PDFs
+Las columnas pueden contener otros campos adicionales; se ignoran durante la generación.
 
-### 4. Generar Certificados
-1. Seleccionar filas a procesar (checkboxes en tabla)
-2. Hacer clic en **"GENERAR CERTIFICADOS"**
-3. Monitorear progreso en tiempo real
-4. Revisar logs para verificar éxito
+## 🎨 Personalización del certificado
+
+Todo el layout se define en `src/core/reportlab_renderer.py`. Allí puede ajustar:
+
+- Márgenes y posiciones del contenido.
+- Tipografías utilizadas.
+- Textos estáticos (por ejemplo, leyendas y firmas).
+- Lógica para tomar campos adicionales del Excel (por ejemplo, un año configurable).
+
+Al modificar el archivo no es necesario regenerar plantillas; basta con reiniciar la aplicación.
 
 ## 🔧 Empaquetado
 
-Para crear un ejecutable independiente:
+Para crear un ejecutable de Windows con PyInstaller y empaquetarlo con NSIS:
 
-\`\`\`bash
-# Ejecutar script de empaquetado
-build.bat
-\`\`\`
+1. Ejecute PyInstaller con el spec incluido (`generador-titulos-utn.spec`).
+2. Ejecute el script NSIS `generador-titulos-utn.nsi` para construir el instalador. El script ya no solicita MiKTeX.
 
-El ejecutable se generará en la carpeta \`dist/\`.
+## 📁 Estructura relevante
 
-## 📁 Estructura del Proyecto
-
-\`\`\`
-certificados_app/
-├── main.py                    # Punto de entrada
+```
+.
+├── main_v2.py                  # Punto de entrada de la aplicación
+├── assets/                     # Logos, fuentes opcionales y prototipos
 ├── src/
-│   ├── gui/                   # Interfaz gráfica
-│   │   ├── main_window.py     # Ventana principal
-│   │   ├── components/        # Componentes UI
-│   │   └── styles.py          # Estilos y colores
-│   ├── core/                  # Lógica de negocio
-│   │   ├── excel_handler.py   # Manejo de Excel
-│   │   ├── latex_processor.py # Procesamiento LaTeX
-│   │   └── pdf_generator.py   # Generación PDF
-│   └── utils/                 # Utilidades
-│       ├── validation.py      # Validaciones
-│       └── logger.py          # Sistema de logging
-├── assets/
-│   ├── logoapp.png           # Logo de la aplicación
-│   └── plantilla.tex         # Plantilla LaTeX
-├── requirements.txt          # Dependencias
-├── build.bat                # Script de empaquetado
-└── README.md                # Documentación
-\`\`\`
+│   ├── core/
+│   │   ├── excel_handlerv2.py  # Lectura y validación de Excel
+│   │   ├── pdf_generatorv2.py  # Orquestador de generación PDF
+│   │   └── reportlab_renderer.py # Renderizado del certificado
+│   ├── gui/                    # Componentes de la interfaz
+│   └── utils/                  # Logger, validaciones y utilidades
+└── requirements.txt
+```
 
-## 🎨 Personalización
+## 🐛 Solución de problemas
 
-### Modificar Plantilla
-Editar \`assets/plantilla.tex\` para cambiar:
-- Diseño del certificado
-- Colores institucionales
-- Logo y encabezados
-- Formato de texto
+- **"ReportLab no está disponible"**: ejecute `pip install -r requirements.txt` e intente nuevamente.
+- **"Logo del certificado no encontrado"**: verifique que `assets/logomejor.png` exista y sea accesible.
+- **"Sin permisos de escritura"**: ejecute la aplicación con permisos elevados o seleccione otra carpeta de destino.
+- **"Columnas faltantes"**: revise los encabezados del Excel según la tabla anterior.
 
-### Cambiar Colores de Interfaz
-Modificar \`src/gui/styles.py\`:
-\`\`\`python
-COLORS = {
-    'PRIMARY': '#1f538d',
-    'SUCCESS': '#4CAF50',
-    'ERROR': '#F44336',
-    # ...
-}
-\`\`\`
+## 📄 Prototipo de certificado
 
-## 🐛 Solución de Problemas
-
-### Error: "MiKTeX no encontrado"
-- Verificar que MiKTeX esté instalado
-- Agregar MiKTeX al PATH del sistema
-- Reiniciar la aplicación
-
-### Error: "Columnas faltantes"
-- Verificar nombres exactos de columnas en Excel
-- Usar formato: \`nombre_apellido\`, \`dni\`, etc.
-- No usar espacios ni mayúsculas
-
-### Error: "Sin permisos de escritura"
-- Ejecutar como administrador
-- Cambiar carpeta de salida
-- Verificar permisos de la carpeta
-
-### PDFs no se generan
-- Verificar plantilla LaTeX
-- Revisar caracteres especiales en datos
-- Consultar logs para errores específicos
+Se incluye `assets/certificate_prototype.pdf` como referencia del diseño generado con ReportLab.
 
 ## 📞 Soporte
 
-Para reportar problemas o solicitar características:
-1. Revisar logs en la consola de la aplicación
-2. Verificar formato de datos Excel
-3. Consultar esta documentación
-
-## 📄 Licencia
-
-Este proyecto es de uso interno institucional.
+En caso de incidentes:
+1. Revise los mensajes de la consola en la aplicación.
+2. Consulte el archivo `logs/app.log` para más detalles.
+3. Valide el formato del Excel con el botón "Validar Datos" antes de generar.
 
 ---
 
-**Versión**: 1.0  
-**Última actualización**: 2024
+**Versión**: 1.1  
+**Última actualización**: 2025

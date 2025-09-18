@@ -108,21 +108,11 @@ class ExcelHandler:
             if not self.validate_dni_format(dni):
                 errors.append(f"Fila {row_number}: DNI '{dni}' tiene formato incorrecto")
                 
-        text_fields = ['nombre_apellido', 'carrera']
-        for field in text_fields:
-            if field in row and not pd.isna(row[field]):
-                text = str(row[field])
-                if self.has_problematic_chars(text):
-                    errors.append(f"Fila {row_number}: '{field}' contiene caracteres problemáticos")
-                    
         return errors
         
     def validate_dni_format(self, dni):
         """Validar formato de DNI"""
         pattern = r'^\d{1,2}\.\d{3}\.\d{3}$'
         return bool(re.match(pattern, dni))
-        
-    def has_problematic_chars(self, text):
-        """Verificar caracteres problemáticos para LaTeX"""
-        problematic = ['&', '%', '$', '#', '^', '_', '{', '}', '~', '\\']
-        return any(char in text for char in problematic)
+
+    # La validación de caracteres especiales ya no es necesaria con ReportLab.
