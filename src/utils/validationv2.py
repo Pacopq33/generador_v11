@@ -1,6 +1,7 @@
+import importlib
 import os
-import subprocess
 import tempfile
+
 from .loggerv2 import AppLogger
 from .resource_utils import get_resource_path  # Importar desde resource_utils
 
@@ -14,11 +15,10 @@ class SystemValidator:
     def validate_system(self):
         """Validar que el sistema esté listo para funcionar"""
         checks = [
-            ("MiKTeX", self.verify_miktex_installed),
-            ("Plantilla LaTeX", self.verify_template_exists),
-            ("Permisos de escritura", self.verify_write_permissions),
+            ("Librería ReportLab", self.verify_reportlab_available),
             ("Directorio assets", self.verify_assets_directory),
-            ("Imágenes disponibles", self.verify_images_available)
+            ("Logo del certificado", self.verify_logo_available),
+            ("Permisos de escritura", self.verify_write_permissions),
         ]
         
         all_passed = True
@@ -36,48 +36,26 @@ class SystemValidator:
                 
         return all_passed
 
-    def verify_miktex_installed(self):
-        """Verificar que MiKTeX esté instalado y XeLaTeX esté en el PATH"""
-        cache_key = "miktex_installed"
+    def verify_reportlab_available(self):
+        """Verificar que ReportLab esté instalado."""
+        cache_key = "reportlab_available"
         if cache_key in self._cache:
             return self._cache[cache_key]
-        
+
         try:
-            result = subprocess.run(
-                ['xelatex', '--version'],
-                capture_output=True,
-                text=True,
-                check=True,
-                creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
-            )
-            self.logger.success(f"XeLaTeX verificado: {result.stdout.splitlines()[0]}")
+            importlib.import_module("reportlab")
             self._cache[cache_key] = True
             return True
-        except FileNotFoundError:
-            self.logger.error("XeLaTeX no encontrado. Asegúrese de que MiKTeX o TeX Live esté instalado y en el PATH.")
+        except ModuleNotFoundError as exc:
+            self.logger.error(
+                f"ReportLab no está disponible: {exc}. Instale las dependencias con 'pip install -r requirements.txt'."
+            )
             self._cache[cache_key] = False
             return False
-        except subprocess.CalledProcessError as e:
-            self.logger.error(f"Error al ejecutar XeLaTeX: {e.stderr}")
+        except Exception as exc:  # pragma: no cover
+            self.logger.error(f"Error al comprobar ReportLab: {type(exc).__name__}: {exc}")
             self._cache[cache_key] = False
             return False
-        except Exception as e:
-            self.logger.error(f"Error inesperado al verificar XeLaTeX: {type(e).__name__}: {str(e)}")
-            self._cache[cache_key] = False
-            return False
-
-    def verify_template_exists(self):
-        """Verificar que la plantilla LaTeX exista"""
-        cache_key = "template_exists"
-        if cache_key in self._cache:
-            return self._cache[cache_key]
-        
-        template_path = get_resource_path(os.path.join("assets", "plantilla6.tex"))
-        result = os.path.exists(template_path) and os.path.isfile(template_path)
-        if not result:
-            self.logger.error(f"Plantilla LaTeX no encontrada en: {template_path}")
-        self._cache[cache_key] = result
-        return result
 
     def verify_write_permissions(self):
         """Verificar permisos de escritura en directorio temporal"""
@@ -108,22 +86,20 @@ class SystemValidator:
         self._cache[cache_key] = result
         return result
 
-    def verify_images_available(self):
-        """Verificar que al menos una imagen esté disponible"""
-        cache_key = "images_available"
+    def verify_logo_available(self):
+        """Verificar que el logo principal esté disponible"""
+        cache_key = "logo_available"
         if cache_key in self._cache:
             return self._cache[cache_key]
-        
+
         assets_dir = get_resource_path("assets")
-        image_files = ['logomejor.png', 'logov2.png']
-        
-        for image_file in image_files:
-            image_path = os.path.join(assets_dir, image_file)
-            if os.path.exists(image_path):
-                self._cache[cache_key] = True
-                return True
-                
-        self.logger.error(f"No se encontraron imágenes en: {assets_dir}")
+        logo_path = os.path.join(assets_dir, "logomejor.png")
+
+        if os.path.exists(logo_path):
+            self._cache[cache_key] = True
+            return True
+
+        self.logger.error(f"Logo del certificado no encontrado en: {logo_path}")
         self._cache[cache_key] = False
         return False
 

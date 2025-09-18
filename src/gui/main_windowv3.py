@@ -30,7 +30,7 @@ class MainWindow:
         self.output_folder = None
         self.processing = False
         self.cancel_processing = False
-        self.miktex_ok = False
+        self.environment_ok = False
 
         self.logger.info("Configurando GUI...")
         self.setup_gui()
@@ -168,21 +168,21 @@ class MainWindow:
 
     def _initial_system_check(self):
         self.logger.info("Inicio de _initial_system_check")
-        self.status_label.config(text="Verificando MiKTeX/XeLaTeX...")
+        self.status_label.config(text="Verificando recursos del sistema...")
         self.root.update_idletasks()
 
         validator = SystemValidator()
-        if validator.verify_miktex_installed():
-            self.miktex_ok = True
-            self.logger.success("MiKTeX/XeLaTeX encontrado. Sistema listo.")
-            self.status_label.config(text="Sistema Listo")
+        if validator.validate_system():
+            self.environment_ok = True
+            self.logger.success("Validación de recursos completada. Sistema listo.")
+            self.status_label.config(text="Recursos listos")
         else:
-            self.miktex_ok = False
-            self.logger.error("MiKTeX/XeLaTeX NO encontrado.")
-            self.status_label.config(text="MiKTeX/XeLaTeX NO ENCONTRADO")
+            self.environment_ok = False
+            self.logger.error("Faltan recursos para generar certificados.")
+            self.status_label.config(text="Recursos incompletos")
             self.root.after(0, lambda: messagebox.showerror(
-                "Error de Configuración",
-                "MiKTeX/XeLaTeX no se encontró.\nDescargue desde https://miktex.org/ e instale XeLaTeX."
+                "Recursos faltantes",
+                "No se encontraron todos los recursos necesarios.\nRevise el log para más detalles."
             ))
 
         self.logger.info("Verificando estado de generación")
@@ -233,7 +233,7 @@ class MainWindow:
             self.output_folder is not None and
             self.data_table.has_data() and
             not self.processing and
-            self.miktex_ok
+            self.environment_ok
         )
         self.btn_generate.config(state="normal" if ready else "disabled")
         self.btn_cancel.config(state="normal" if self.processing else "disabled")
